@@ -1,8 +1,8 @@
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.charity_project import CharityProject
 from app.crud.charity_project import charityproject_crud
+from app.models.charity_project import CharityProject
 
 
 async def check_project_exists(
@@ -50,6 +50,3 @@ def check_project_no_invested_funds(project):
             status_code=400,
             detail="Нельзя удалить проект, в который уже внесли средства"
         )
-    
-
-

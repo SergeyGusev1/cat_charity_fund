@@ -1,18 +1,16 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from datetime import datetime
 
-from app.api.validators import (check_full_amount_valid, check_project_exists,
+from app.api.validators import (check_full_amount_valid, check_name_duplicate,
+                                check_project_exists,
                                 check_project_no_invested_funds,
-                                check_project_not_closed,
-                                check_name_duplicate)
+                                check_project_not_closed)
 from app.core.db import get_async_session
 from app.core.user import current_superuser
 from app.crud.charity_project import charityproject_crud
 from app.schemas.charity_project import (CharityProjectCreate,
                                          CharityProjectDB,
                                          CharityProjectUpdate)
-
 
 project_router = APIRouter()
 
@@ -28,7 +26,8 @@ async def create_project(
 ):
     """Только для суперюзеров."""
     await check_name_duplicate(project.name, session)
-    new_project = await charityproject_crud.create_with_invest(project, session)
+    new_project = await charityproject_crud.create_with_invest(
+        project, session)
     return new_project
 
 

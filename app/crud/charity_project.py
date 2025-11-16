@@ -1,13 +1,14 @@
-from typing import Optional
 from datetime import datetime
+from typing import Optional
+
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.crud.base import CRUDBase
 from app.crud.invest import invest_funds
 from app.models.charity_project import CharityProject
 from app.schemas.charity_project import (CharityProjectCreate,
                                          CharityProjectUpdate)
-
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class CRUDMeetingRoom(CRUDBase[
@@ -41,7 +42,7 @@ class CRUDMeetingRoom(CRUDBase[
             db_obj.fully_invested = True
             db_obj.close_date = datetime.now()
         session.add(db_obj)
-        await session.commit()
+        await session.flush()
         await session.refresh(db_obj)
         return db_obj
 
@@ -55,6 +56,7 @@ class CRUDMeetingRoom(CRUDBase[
             create_date=datetime.now()
         )
         session.add(new_project)
+        await session.flush()
         await invest_funds(session)
         await session.commit()
         await session.refresh(new_project)

@@ -1,13 +1,13 @@
-from typing import Optional
 from datetime import datetime
-from app.crud.base import CRUDBase
-from app.crud.invest import invest_funds
-from app.models import Donation, User
-from app.schemas.donation import (DonationCreate,
-                                  DonationUpdate)
+from typing import Optional
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.crud.base import CRUDBase
+from app.crud.invest import invest_funds
+from app.models import Donation
+from app.schemas.donation import DonationCreate, DonationUpdate
 
 
 class CRUDDonation(CRUDBase[
@@ -26,7 +26,7 @@ class CRUDDonation(CRUDBase[
             comment=getattr(donation_in, "comment", None),
         )
         session.add(new_donation)
-
+        await session.flush()
         await invest_funds(session)
         await session.commit()
         await session.refresh(new_donation)
