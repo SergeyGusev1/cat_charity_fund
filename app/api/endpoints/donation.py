@@ -32,7 +32,7 @@ async def create_donate(
 async def get_my_donations(
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session)
-) -> list[Donation] | None:
+):
 
     return await donation_crud.get_donation_user(
         user.id, session)
