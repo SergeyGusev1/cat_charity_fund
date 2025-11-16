@@ -5,9 +5,9 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.base import CRUDBase
-from app.crud.invest import invest_funds
 from app.models import Donation
 from app.schemas.donation import DonationCreate, DonationUpdate
+from app.services.services import invest_funds
 
 
 class CRUDDonation(CRUDBase[
@@ -42,8 +42,7 @@ class CRUDDonation(CRUDBase[
                 Donation.name == project_name
             )
         )
-        project_id = project_id.scalars().first()
-        return project_id
+        return project_id.scalars().first()
 
     async def get_donation_user(
         self,
@@ -55,8 +54,8 @@ class CRUDDonation(CRUDBase[
                 Donation.user_id == user_id
             )
         )
-        donations = donations.scalars().all()
-        return donations
+
+        return donations.scalars().all()
 
 
 donation_crud = CRUDDonation(Donation)

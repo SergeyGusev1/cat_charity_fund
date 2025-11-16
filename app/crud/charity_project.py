@@ -5,13 +5,13 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.base import CRUDBase
-from app.crud.invest import invest_funds
-from app.models.charity_project import CharityProject
+from app.models import CharityProject
 from app.schemas.charity_project import (CharityProjectCreate,
                                          CharityProjectUpdate)
+from app.services.services import invest_funds
 
 
-class CRUDMeetingRoom(CRUDBase[
+class CRUDCharityProject(CRUDBase[
     CharityProject,
     CharityProjectCreate,
     CharityProjectUpdate
@@ -27,8 +27,8 @@ class CRUDMeetingRoom(CRUDBase[
                 CharityProject.name == project_name
             )
         )
-        project_id = project_id.scalars().first()
-        return project_id
+
+        return project_id.scalars().first()
 
     async def update(
             self,
@@ -38,9 +38,6 @@ class CRUDMeetingRoom(CRUDBase[
     ):
         for field, value in obj_in.dict(exclude_unset=True).items():
             setattr(db_obj, field, value)
-        if db_obj.invested_amount >= db_obj.full_amount:
-            db_obj.fully_invested = True
-            db_obj.close_date = datetime.now()
         session.add(db_obj)
         await session.flush()
         await session.refresh(db_obj)
@@ -63,4 +60,4 @@ class CRUDMeetingRoom(CRUDBase[
         return new_project
 
 
-charityproject_crud = CRUDMeetingRoom(CharityProject)
+charityproject_crud = CRUDCharityProject(CharityProject)

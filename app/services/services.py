@@ -6,8 +6,18 @@ from app.models.charity_project import CharityProject
 from app.models.donation import Donation
 
 
-async def invest_funds(session):
+def finalize_investment(obj):
+    """Проверяет завершены ли инвестиции в объекте."""
+    if obj.invested_amount == obj.full_amount:
+        obj.fully_invested = True
+        obj.close_date = datetime.now()
 
+
+async def invest_funds(session):
+    """
+    Автоматически распределяет средства между
+    активными проектами и пожертвованиями.
+    """
     projects = (await session.execute(
         select(CharityProject).where(
             CharityProject.fully_invested == False).order_by(CharityProject.id) # noqa
@@ -38,13 +48,8 @@ async def invest_funds(session):
             project.invested_amount = project_invested + to_invest
             donation.invested_amount = donation_invested + to_invest
 
-            if project.invested_amount == project.full_amount:
-                project.fully_invested = True
-                project.close_date = datetime.now()
-
-            if donation.invested_amount == donation.full_amount:
-                donation.fully_invested = True
-                donation.close_date = datetime.now()
+            finalize_investment(project)
+            finalize_investment(donation)
 
             session.add(project)
             session.add(donation)

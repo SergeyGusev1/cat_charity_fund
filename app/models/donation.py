@@ -1,15 +1,12 @@
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, Text
+from sqlalchemy import Column, ForeignKey, Integer, Text
 
 from app.core.db import Base
 
+from .basemodel import BaseModelMixin
 
-class Donation(Base):
+
+class Donation(Base, BaseModelMixin):
     __tablename__ = 'donation'
 
     user_id = Column(Integer, ForeignKey('user.id'))
     comment = Column(Text, nullable=True)
-    full_amount = Column(Integer, nullable=False)
-    invested_amount = Column(Integer, nullable=False, default=0)
-    fully_invested = Column(Boolean, default=False, nullable=False)
-    create_date = Column(DateTime, nullable=False)
-    close_date = Column(DateTime, nullable=True)

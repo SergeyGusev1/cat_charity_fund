@@ -8,6 +8,7 @@ from app.api.validators import (check_full_amount_valid, check_name_duplicate,
 from app.core.db import get_async_session
 from app.core.user import current_superuser
 from app.crud.charity_project import charityproject_crud
+from app.models import CharityProject
 from app.schemas.charity_project import (CharityProjectCreate,
                                          CharityProjectDB,
                                          CharityProjectUpdate)
@@ -38,7 +39,7 @@ async def create_project(
 )
 async def get_all_projects(
     session: AsyncSession = Depends(get_async_session)
-) -> list[CharityProjectDB]:
+) -> list[CharityProject]:
     """Для все пользователей."""
 
     return await charityproject_crud.get_multi(session)

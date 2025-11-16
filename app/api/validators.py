@@ -1,6 +1,8 @@
+from http import HTTPStatus
+
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from http import HTTPStatus
+
 from app.crud.charity_project import charityproject_crud
 from app.models.charity_project import CharityProject
 
