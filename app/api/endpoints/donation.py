@@ -1,46 +1,52 @@
+from typing import List
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_async_session
 from app.core.user import current_superuser, current_user
 from app.crud.donation import donation_crud
-from app.models import User
+from app.models import User, Donation
 from app.schemas.donation import DonationCreate, DonationDB, DonationDBSuper
 
 donation_router = APIRouter()
 
 
-@donation_router.post('/', response_model=DonationDB)
+@donation_router.post(
+    '/', response_model=DonationDB,
+    summary='Создать новое пожертвование')
 async def create_donate(
     donation_in: DonationCreate,
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session)
-):
-    new_donation = await donation_crud.create_with_invest(
+) -> DonationDB:
+
+    return await donation_crud.create_with_invest(
         donation_in,
         user,
         session
     )
-    return new_donation
 
 
-@donation_router.get('/my', response_model=list[DonationDB])
+@donation_router.get(
+    '/my', response_model=list[DonationDB],
+    summary='Получить пожертвования пользователя')
 async def get_my_donations(
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session)
-):
-    all_donations_user = await donation_crud.get_donation_user(
+) -> list[Donation] | None:
+
+    return await donation_crud.get_donation_user(
         user.id, session)
-    return all_donations_user
 
 
 @donation_router.get(
     '/',
     response_model=list[DonationDBSuper],
-    dependencies=[Depends(current_superuser)]
+    dependencies=[Depends(current_superuser)],
+    summary='Получить все пожертвования. Доступно только суперюзерам.'
 )
 async def get_all_donation(
     session: AsyncSession = Depends(get_async_session)
-):
-    all_donations = await donation_crud.get_multi(session)
-    return all_donations
+) -> list[Donation]:
+    return await donation_crud.get_multi(session)
