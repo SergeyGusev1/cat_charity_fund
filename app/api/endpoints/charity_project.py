@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+from datetime import datetime
 
 from app.api.validators import (check_full_amount_valid, check_project_exists,
                                 check_project_no_invested_funds,
-                                check_project_not_closed)
+                                check_project_not_closed,
+                                check_name_duplicate)
 from app.core.db import get_async_session
 from app.core.user import current_superuser
 from app.crud.charity_project import charityproject_crud
@@ -25,6 +27,7 @@ async def create_project(
     session: AsyncSession = Depends(get_async_session)
 ):
     """Только для суперюзеров."""
+    await check_name_duplicate(project.name, session)
     new_project = await charityproject_crud.create(project, session)
     return new_project
 
@@ -51,16 +54,19 @@ async def update_charityproject(
     obj_in: CharityProjectUpdate,
     session: AsyncSession = Depends(get_async_session)
 ):
-
     project = await check_project_exists(project_id, session)
+    if obj_in.name is not None:
+        await check_name_duplicate(obj_in.name, session)
     check_project_not_closed(project)
-    check_full_amount_valid(obj_in.full_amount, project.invested_amount)
+    if obj_in.full_amount is not None:
+        check_full_amount_valid(obj_in.full_amount, project.invested_amount)
 
     updated_project = await charityproject_crud.update(
         db_obj=project,
         obj_in=obj_in,
         session=session
     )
+
     return updated_project
 
 

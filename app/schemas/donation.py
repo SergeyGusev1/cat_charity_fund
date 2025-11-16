@@ -14,17 +14,19 @@ class DonationCreate(DonationBase):
 
 
 class DonationUpdate(BaseModel):
-    full_amount: PositiveInt
+    full_amount: Optional[PositiveInt] = None
     comment: Optional[str] = None
 
 
 class DonationDB(DonationBase):
     id: int
-    user_id: int
-    invested_amount: int
-    fully_invested: bool
     create_date: Optional[datetime]
-    close_date: Optional[datetime]
 
     class Config:
         orm_mode = True
+
+
+class DonationDBSuper(DonationDB):
+    user_id: Optional[int] = None
+    invested_amount: Optional[int] = None
+    fully_invested: Optional[bool] = None
