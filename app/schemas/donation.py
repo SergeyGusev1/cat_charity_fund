@@ -1,10 +1,11 @@
-from pydantic import BaseModel, Field
-from typing import Optional
 from datetime import datetime
+from typing import Optional
+
+from pydantic import BaseModel, Field, PositiveInt
 
 
 class DonationBase(BaseModel):
-    full_amount: int = Field(..., ge=0)
+    full_amount: PositiveInt
     comment: Optional[str] = None
 
 
@@ -13,7 +14,7 @@ class DonationCreate(DonationBase):
 
 
 class DonationUpdate(BaseModel):
-    full_amount: Optional[int] = Field(None, ge=0)
+    full_amount: PositiveInt
     comment: Optional[str] = None
 
 
