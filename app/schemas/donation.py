@@ -20,7 +20,7 @@ class DonationUpdate(BaseModel):
 
 class DonationDB(DonationBase):
     id: int
-    create_date: Optional[datetime]
+    create_date: datetime
 
     class Config:
         orm_mode = True
@@ -28,5 +28,5 @@ class DonationDB(DonationBase):
 
 class DonationDBSuper(DonationDB):
     user_id: Optional[int] = None
-    invested_amount: Optional[int] = None
-    fully_invested: Optional[bool] = None
+    invested_amount: Optional[int] = 0
+    fully_invested: Optional[bool] = False

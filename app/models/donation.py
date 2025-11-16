@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer, String,
                         Text)
 
@@ -9,8 +10,8 @@ class Donation(Base):
 
     user_id = Column(Integer, ForeignKey('user.id'))
     comment = Column(Text, nullable=True)
-    full_amount = Column(Integer)
-    invested_amount = Column(Integer)
-    fully_invested = Column(Boolean)
-    create_date = Column(DateTime)
-    close_date = Column(DateTime)
+    full_amount = Column(Integer, nullable=False)
+    invested_amount = Column(Integer, nullable=False, default=0)
+    fully_invested = Column(Boolean, default=False)
+    create_date = Column(DateTime, nullable=False)
+    close_date = Column(DateTime, nullable=True)

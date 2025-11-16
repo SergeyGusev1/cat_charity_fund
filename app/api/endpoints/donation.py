@@ -17,7 +17,12 @@ async def create_donate(
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session)
 ):
-    pass
+    new_donation = await donation_crud.create_with_invest(
+        donation_in,
+        user,
+        session
+    )
+    return new_donation
 
 
 @donation_router.get('/my', response_model=list[DonationDB])
