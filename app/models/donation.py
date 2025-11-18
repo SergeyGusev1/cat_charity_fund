@@ -2,7 +2,7 @@ from sqlalchemy import Column, ForeignKey, Integer, Text
 
 from app.core.db import Base
 
-from .basemodel import BaseModelMixin
+from .base_model import BaseModelMixin
 
 
 class Donation(Base, BaseModelMixin):

@@ -3,16 +3,15 @@ from typing import Optional
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.crud.base import CRUDBase
+from app.crud.base import BaseCharityRepository
 from app.models import Donation
 from app.schemas.donation import DonationCreate, DonationUpdate
 
 
-class CRUDDonation(CRUDBase[
-    Donation,
-    DonationCreate,
-    DonationUpdate
-]):
+class CRUDDonation(
+    BaseCharityRepository[
+        Donation, DonationCreate, DonationUpdate]
+):
     async def get_project_id_by_name(
         self,
         project_name: str,

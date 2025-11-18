@@ -3,7 +3,7 @@ from .donation import Donation
 from .user import User
 
 __all__ = [
-    "CharityProject",
-    "Donation",
-    "User"
+    'CharityProject',
+    'Donation',
+    'User'
 ]

@@ -81,6 +81,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         await session.commit()
         return db_obj
 
+
+class BaseCharityRepository(CRUDBase[
+        ModelType, CreateSchemaType, UpdateSchemaType]):
     async def get_not_fully_invested(
         self,
         session: AsyncSession

@@ -2,7 +2,7 @@ from sqlalchemy import Column, String, Text
 
 from app.core.db import Base
 
-from .basemodel import BaseModelMixin
+from .base_model import BaseModelMixin
 
 
 class CharityProject(Base, BaseModelMixin):
