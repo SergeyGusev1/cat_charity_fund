@@ -5,6 +5,7 @@ from app.api.validators import (check_full_amount_valid, check_name_duplicate,
                                 check_project_exists,
                                 check_project_no_invested_funds,
                                 check_project_not_closed)
+from app.services.services import invest_funds
 from app.core.db import get_async_session
 from app.core.user import current_superuser
 from app.crud.charity_project import charityproject_crud
@@ -28,8 +29,14 @@ async def create_project(
 ) -> CharityProjectDB:
     """Только для суперюзеров."""
     await check_name_duplicate(project.name, session)
-    return await charityproject_crud.create_with_invest(
-        project, session)
+    new_project = await charityproject_crud.create(
+        project,
+        session
+    )
+    await invest_funds(session)
+    await session.commit()
+    await session.refresh(new_project)
+    return new_project
 
 
 @project_router.get(

@@ -81,3 +81,15 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         await session.delete(db_obj)
         await session.commit()
         return db_obj
+
+    async def get_not_fully_invested(
+        self,
+        session: AsyncSession
+    ) -> List[ModelType]:
+        """Получить все незакрытые объекты."""
+        db_objs = await session.execute(
+            select(self.model).where(
+                self.model.fully_invested == False
+            ).order_by(self.model.id)
+        )
+        return db_objs.scalars().all

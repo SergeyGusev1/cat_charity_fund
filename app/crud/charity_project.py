@@ -8,7 +8,6 @@ from app.crud.base import CRUDBase
 from app.models import CharityProject
 from app.schemas.charity_project import (CharityProjectCreate,
                                          CharityProjectUpdate)
-from app.services.services import invest_funds
 
 
 class CRUDCharityProject(CRUDBase[
@@ -42,22 +41,6 @@ class CRUDCharityProject(CRUDBase[
         await session.flush()
         await session.refresh(db_obj)
         return db_obj
-
-    async def create_with_invest(self, project_in, session):
-        new_project = CharityProject(
-            name=project_in.name,
-            description=project_in.description,
-            full_amount=project_in.full_amount,
-            invested_amount=0,
-            fully_invested=False,
-            create_date=datetime.now()
-        )
-        session.add(new_project)
-        await session.flush()
-        await invest_funds(session)
-        await session.commit()
-        await session.refresh(new_project)
-        return new_project
 
 
 charityproject_crud = CRUDCharityProject(CharityProject)

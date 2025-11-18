@@ -1,31 +1,28 @@
 from datetime import datetime
 
-from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.crud.charity_project import charityproject_crud
+from app.crud.donation import donation_crud
 from app.models.charity_project import CharityProject
-from app.models.donation import Donation
 
 
-def finalize_investment(obj):
+def finalize_investment(obj: CharityProject) -> None:
     """Проверяет завершены ли инвестиции в объекте."""
     if obj.invested_amount == obj.full_amount:
         obj.fully_invested = True
         obj.close_date = datetime.now()
 
 
-async def invest_funds(session):
+async def invest_funds(
+    session: AsyncSession
+) -> None:
     """
     Автоматически распределяет средства между
     активными проектами и пожертвованиями.
     """
-    projects = (await session.execute(
-        select(CharityProject).where(
-            CharityProject.fully_invested == False).order_by(CharityProject.id) # noqa
-    )).scalars().all()
-    donations = (await session.execute(
-        select(Donation).where(
-            Donation.fully_invested == False).order_by(Donation.id) # noqa
-    )).scalars().all()
+    projects = await charityproject_crud.get_not_fully_invested(session)
+    donations = await donation_crud.get_not_fully_invested(session)
     for project in projects:
         if project.fully_invested:
             continue
