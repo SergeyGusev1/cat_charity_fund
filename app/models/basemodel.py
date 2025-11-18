@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, Column, DateTime, Integer, CheckConstraint
+from sqlalchemy import Boolean, CheckConstraint, Column, DateTime, Integer
 
 
 class BaseModelMixin:

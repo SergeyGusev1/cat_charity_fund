@@ -5,7 +5,6 @@ from app.api.validators import (check_full_amount_valid, check_name_duplicate,
                                 check_project_exists,
                                 check_project_no_invested_funds,
                                 check_project_not_closed)
-from app.services.services import invest_funds
 from app.core.db import get_async_session
 from app.core.user import current_superuser
 from app.crud.charity_project import charityproject_crud
@@ -13,6 +12,7 @@ from app.models import CharityProject
 from app.schemas.charity_project import (CharityProjectCreate,
                                          CharityProjectDB,
                                          CharityProjectUpdate)
+from app.services.services import invest_funds
 
 project_router = APIRouter()
 
@@ -48,7 +48,6 @@ async def get_all_projects(
     session: AsyncSession = Depends(get_async_session)
 ) -> list[CharityProject]:
     """Для все пользователей."""
-
     return await charityproject_crud.get_multi(session)
 
 

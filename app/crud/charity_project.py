@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Optional
 
 from sqlalchemy import select
@@ -15,7 +14,6 @@ class CRUDCharityProject(CRUDBase[
     CharityProjectCreate,
     CharityProjectUpdate
 ]):
-
     async def get_project_id_by_name(
             self,
             project_name: str,
@@ -28,19 +26,6 @@ class CRUDCharityProject(CRUDBase[
         )
 
         return project_id.scalars().first()
-
-    async def update(
-            self,
-            db_obj: CharityProject,
-            obj_in: CharityProjectUpdate,
-            session: AsyncSession
-    ):
-        for field, value in obj_in.dict(exclude_unset=True).items():
-            setattr(db_obj, field, value)
-        session.add(db_obj)
-        await session.flush()
-        await session.refresh(db_obj)
-        return db_obj
 
 
 charityproject_crud = CRUDCharityProject(CharityProject)

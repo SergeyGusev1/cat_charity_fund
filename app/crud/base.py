@@ -46,7 +46,6 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             session: AsyncSession,
             user: Optional[User] = None
     ) -> ModelType:
-
         obj_in_data = obj_in.dict()
         if user is not None:
             obj_in_data['user_id'] = user.id
@@ -89,7 +88,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         """Получить все незакрытые объекты."""
         db_objs = await session.execute(
             select(self.model).where(
-                self.model.fully_invested == False
+                self.model.fully_invested == False # noqa
             ).order_by(self.model.id)
         )
-        return db_objs.scalars().all
+        return db_objs.scalars().all()

@@ -1,13 +1,15 @@
 from datetime import datetime
+from typing import Union
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.charity_project import charityproject_crud
 from app.crud.donation import donation_crud
 from app.models.charity_project import CharityProject
+from app.models.donation import Donation
 
 
-def finalize_investment(obj: CharityProject) -> None:
+def finalize_investment(obj: Union[CharityProject, Donation]) -> None:
     """Проверяет завершены ли инвестиции в объекте."""
     if obj.invested_amount == obj.full_amount:
         obj.fully_invested = True
